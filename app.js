@@ -4,12 +4,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 
-app.use('/picture/uploads', express.static(__dirname + '/uploads'));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.use(bodyParser.json());
-
-
-const routes = require('./routes/imagefile');
+const routes = require('./routes/upload.routes');
 
 mongoose.connect('mongodb://localhost/filepath');
 
