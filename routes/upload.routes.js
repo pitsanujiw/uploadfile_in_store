@@ -5,6 +5,8 @@ const bodyParser = require("body-parser")
 const fs = require("fs");
 const mongoose = require('mongoose');
 const path = require('path')
+const autoIncrement = require('mongoose-auto-increment');
+
 
 const filePath = mongoose.Schema({
     path: {
@@ -15,9 +17,9 @@ const filePath = mongoose.Schema({
     originalname: {
         type: String,
         required: true
-    }
-
+    }  
 });
+
 const DataFile = module.exports = mongoose.model('files', filePath);
 
 router.getFiles = (callback, limit) => {
@@ -42,19 +44,24 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/')
     },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+        cb(null, file.fieldname + "_"+Date.now()+"_"+ file.originalname)
     }
 });
 
 let upload = multer({
-    storage: storage
+    storage: storage,
+    limits: {
+        fileSize: 4000000
+      }
 })
+
 
 router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '..', '/index.html'));
 });
 
 router.post('/', upload.any(), (req, res, next) => {
+    
     res.send(req.files);
     req.files.forEach((e, index) => {
         console.log(e);
